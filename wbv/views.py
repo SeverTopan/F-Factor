@@ -5,7 +5,7 @@ from .serializers import WbvEntrySerializer
 
 class WbvEntryList(APIView):
 
-    def get(self, request):
+    def get(self, request, format=None):
         wbv = WbvEntry.objects.all()
         serializer = WbvEntrySerializer(wbv, many=True)
         return Response(serializer.data)
