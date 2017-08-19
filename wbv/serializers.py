@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import WbvEntry
 
 
-class ToDoSerializer(serializers.ModelSerializer):
+class WbvEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WbvEntry
