@@ -1,9 +1,11 @@
 from django.db import models
 
-class ToDo(models.Model):
-    name = models.CharField(max_length=128)
-    description = models.TextField()
+class WbvEntry(models.Model):
+    team_name = models.TextField()
+    team_symbol = models.TextField()
+    score = models.PositiveIntegerField()
+
 
     def __str__(self):
-        return self.name
+        return self.team_name
     
