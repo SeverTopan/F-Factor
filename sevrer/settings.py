@@ -30,6 +30,7 @@ DEBUG = True
 
 INSTALLED_APPS = [
     'rest_framework',
+    'update',
     'wbv',
     'django.contrib.admin',
     'django.contrib.auth',

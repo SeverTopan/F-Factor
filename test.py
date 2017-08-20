@@ -13,15 +13,11 @@ http_auth = credentials.authorize(Http())
 spreadsheet_id = '1phD9UoMwhutRabSvekdRgDUFzD9zBKWcI-7p_8_Tv0s'
 
 # The ranges to retrieve from the spreadsheet.
-ranges = ['\'Water Balloon Volleyball\'!A2:C5']
-
-# True if grid data should be returned.
-# This parameter is ignored if a field mask was set in the request.
-include_grid_data = False
+ranges = ["'Water Balloon Volleyball'!A2:C5"]
 
 sheets = discovery.build('sheets', 'v4', http=http_auth)
 
-request = sheets.spreadsheets().get(spreadsheetId=spreadsheet_id, ranges=ranges, includeGridData=include_grid_data)
+request = sheets.spreadsheets().values().batchGet(spreadsheetId=spreadsheet_id, ranges=ranges)
 response = request.execute()
 
-pprint(response)
+pprint(response['valueRanges'])
