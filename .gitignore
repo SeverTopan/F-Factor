@@ -110,4 +110,4 @@ source .zshcustom
 staticfiles
 
 # private key
-F!Factor-9533e3a8aaf0.json
+key.json

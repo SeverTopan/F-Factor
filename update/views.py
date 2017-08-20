@@ -7,7 +7,7 @@ from pprint import pprint
 
 scopes = ['https://www.googleapis.com/auth/spreadsheets']
 
-credentials = ServiceAccountCredentials.from_json_keyfile_name('F!Factor-9533e3a8aaf0.json', scopes)
+credentials = ServiceAccountCredentials.from_json_keyfile_name('key.json', scopes)
 
 http_auth = credentials.authorize(Http())
 
