@@ -4,10 +4,13 @@ from httplib2 import Http
 from django.http import HttpResponse
 from wbv.models import WbvEntry
 from pprint import pprint
+import os
+import json
 
 scopes = ['https://www.googleapis.com/auth/spreadsheets']
 
-credentials = ServiceAccountCredentials.from_json_keyfile_name('key.json', scopes)
+#credentials = ServiceAccountCredentials.from_json_keyfile_name('key.json', scopes)
+credentials = ServiceAccountCredentials.from_json(json.loads(os.environ['GOOGLE_SERVICE_KEY']), scopes)
 
 http_auth = credentials.authorize(Http())
 
