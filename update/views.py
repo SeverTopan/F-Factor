@@ -9,8 +9,10 @@ import json
 
 scopes = ['https://www.googleapis.com/auth/spreadsheets']
 
-#credentials = ServiceAccountCredentials.from_json_keyfile_name('key.json', scopes)
-credentials = ServiceAccountCredentials.from_json_keyfile_dict(json.loads(os.environ['GOOGLE_SERVICE_KEY']), scopes)
+if os.environ.get('GOOGLE_SERVICE_KEY') is not None:
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(json.loads(os.environ['GOOGLE_SERVICE_KEY']), scopes)
+else:
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('key.json', scopes)
 
 http_auth = credentials.authorize(Http())
 
