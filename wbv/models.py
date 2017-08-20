@@ -1,11 +1,11 @@
 from django.db import models
+from team.models import Team
 
 class WbvEntry(models.Model):
-    team_name = models.TextField()
-    team_symbol = models.TextField()
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, default=None)
     score = models.PositiveIntegerField()
 
 
     def __str__(self):
-        return self.team_name
+        return self.team.name
     

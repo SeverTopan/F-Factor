@@ -29,7 +29,7 @@ def update(_):
 
     # wbv
     for entry in response['valueRanges'][0]['values']:
-        WbvEntry.objects.filter(team_name=entry[1]).update(score=entry[0])
+        WbvEntry.objects.filter(team__name=entry[1]).update(score=entry[0])
 
     return HttpResponse()
 
