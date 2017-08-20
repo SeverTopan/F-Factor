@@ -24,13 +24,14 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = "kr!e2+2y!og+-bov6wdtrnpu$_6n6=g+$@mw0wvlr=m(1!*nm^"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Application definition
 
 INSTALLED_APPS = [
     'rest_framework',
     'update',
+    'leaders',
     'team',
     'wbv',
     'django.contrib.admin',
