@@ -6,6 +6,6 @@ from .serializers import WbvEntrySerializer
 class WbvEntryList(APIView):
 
     def get(self, request, format=None):
-        wbv = WbvEntry.objects.all().order_by('team__name')
+        wbv = WbvEntry.objects.all().order_by('team__order')
         serializer = WbvEntrySerializer(wbv, many=True)
         return Response(serializer.data)
