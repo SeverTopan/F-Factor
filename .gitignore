@@ -104,7 +104,6 @@ source .zshcustom
 
 # folders
 /old
-*/migrations
 
 # staticfiles
 staticfiles
