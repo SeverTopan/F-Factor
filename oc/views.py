@@ -6,6 +6,6 @@ from .serializers import OcEntrySerializer
 class OcEntryList(APIView):
 
     def get(self, request, format=None):
-        thp = OcEntry.objects.all().order_by('team__name')
+        thp = OcEntry.objects.all().order_by('team__order')
         serializer = OcEntrySerializer(thp, many=True)
         return Response(serializer.data)

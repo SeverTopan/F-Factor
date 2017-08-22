@@ -6,6 +6,6 @@ from .serializers import DcEntrySerializer
 class DcEntryList(APIView):
 
     def get(self, request, format=None):
-        thp = DcEntry.objects.all().order_by('team__name')
+        thp = DcEntry.objects.all().order_by('team__order')
         serializer = DcEntrySerializer(thp, many=True)
         return Response(serializer.data)
