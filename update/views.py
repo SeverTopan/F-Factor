@@ -11,6 +11,12 @@ from pprint import pprint
 import os
 import json
 
+def parseInt(string):
+    try: 
+        return int(string)
+    except ValueError:
+        return None
+
 def update(_):
     scopes = ['https://www.googleapis.com/auth/spreadsheets']
 
@@ -40,29 +46,29 @@ def update(_):
 
     # wbv
     for entry in response['valueRanges'][0]['values']:
-        WbvEntry.objects.filter(team__name=entry[1]).update(score=entry[0])
+        WbvEntry.objects.filter(team__name=entry[1]).update(score=parseInt(entry[0]))
 
     # bm
     for entry in response['valueRanges'][1]['values']:
-        BmEntry.objects.filter(team__name=entry[1]).update(score=entry[0])
+        BmEntry.objects.filter(team__name=entry[1]).update(score=parseInt(entry[0]))
 
     # oc
     for entry in response['valueRanges'][2]['values']:
-        OcEntry.objects.filter(team__name=entry[2]).update(score=entry[0], time=entry[1])
+        OcEntry.objects.filter(team__name=entry[2]).update(score=parseInt(entry[0]), time=parseInt(entry[1]))
 
     # thp
     for entry in response['valueRanges'][3]['values']:
-        ThpEntry.objects.filter(team__name=entry[2]).update(score=entry[0], time=entry[1])
+        ThpEntry.objects.filter(team__name=entry[2]).update(score=parseInt(entry[0]), time=parseInt(entry[1]))
 
     # dc
     for entry in response['valueRanges'][4]['values']:
         DcEntry.objects.filter(team__name=entry[6]).update(
-            score=entry[0],
-            baja_score=entry[1], 
-            baja_time=entry[2],
-            toike_cannon_score=entry[3],
-            wise_score=entry[4],
-            hpv_score=entry[5],
+            score=parseInt(entry[0]),
+            baja_score=parseInt(entry[1]), 
+            baja_time=parseInt(entry[2]),
+            toike_cannon_score=parseInt(entry[3]),
+            wise_score=parseInt(entry[4]),
+            hpv_score=parseInt(entry[5]),
         )
 
     return HttpResponse()
