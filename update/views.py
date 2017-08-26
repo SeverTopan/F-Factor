@@ -11,9 +11,16 @@ from pprint import pprint
 import os
 import json
 
+MAX_INT = 2147483647
+
 def parseInt(string):
     try: 
-        return int(string)
+        val = int(string)
+
+        if val > MAX_INT:
+            return None
+
+        return val
     except ValueError:
         return None
 
