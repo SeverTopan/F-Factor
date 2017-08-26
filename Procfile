@@ -1,2 +1,1 @@
-web1: gunicorn sevrer.wsgi
-web2: gunicorn sevrer.wsgi
+web: gunicorn sevrer.wsgi
