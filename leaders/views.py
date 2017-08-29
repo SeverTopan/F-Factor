@@ -11,8 +11,13 @@ from thp.serializers import ThpEntrySerializer
 from dc.models import DcEntry
 from dc.serializers import DcEntrySerializer
 from django.db.models import Max, Min
+from django.core.cache import cache
 
 def _get_wbv():
+    cached_val = cache.get('wbv')
+    if cached_val is not None:
+        return cached_val
+
     max_score = WbvEntry.objects.all().aggregate(score=Max('score'))['score']
     wbv = WbvEntry.objects.filter(score=max_score)
     wbv_data = WbvEntrySerializer(wbv, many=True).data[0]
@@ -21,9 +26,15 @@ def _get_wbv():
         wbv_data['team']['name'] = 'Tie!'
         wbv_data['team']['symbol'] = '='
 
+    cache.set('wbv', wbv_data, 15)
+
     return wbv_data
 
 def _get_bm():
+    cached_val = cache.get('bm')
+    if cached_val is not None:
+        return cached_val
+
     max_score = BmEntry.objects.all().aggregate(score=Max('score'))['score']
     bm = BmEntry.objects.filter(score=max_score)
     bm_data = BmEntrySerializer(bm, many=True).data[0]
@@ -32,9 +43,15 @@ def _get_bm():
         bm_data['team']['name'] = 'Tie!'
         bm_data['team']['symbol'] = '='
 
+    cache.set('bm', bm_data, 15)
+
     return bm_data
 
 def _get_oc():
+    cached_val = cache.get('oc')
+    if cached_val is not None:
+        return cached_val
+
     max_time = OcEntry.objects.all().aggregate(time=Min('time'))['time']
     oc = OcEntry.objects.filter(time=max_time)
     oc_data = OcEntrySerializer(oc, many=True).data[0]
@@ -43,9 +60,15 @@ def _get_oc():
         oc_data['team']['name'] = 'Tie!'
         oc_data['team']['symbol'] = '='
 
+    cache.set('oc', oc_data, 15)
+
     return oc_data
 
 def _get_thp():
+    cached_val = cache.get('thp')
+    if cached_val is not None:
+        return cached_val
+
     max_time = ThpEntry.objects.all().aggregate(time=Min('time'))['time']
     thp = ThpEntry.objects.filter(time=max_time)
     thp_data = ThpEntrySerializer(thp, many=True).data[0]
@@ -54,16 +77,26 @@ def _get_thp():
         thp_data['team']['name'] = 'Tie!'
         thp_data['team']['symbol'] = '='
 
+    cache.set('thp', thp_data, 15)
+
     return thp_data
 
 def _get_dc():
+    cached_val = cache.get('dc')
+    if cached_val is not None:
+        return cached_val
+
     dc_objects = DcEntry.objects.all()
-    return {
+    dc_data = {
         'baja': _get_dc_baja(dc_objects),
         'tc': _get_dc_tc(dc_objects),
         'wise': _get_dc_wise(dc_objects),
         'hpv': _get_dc_hpv(dc_objects),
     }
+
+    cache.set('dc', dc_data, 15)
+
+    return dc_data
 
 def _get_dc_baja(objects):
     max_time = objects.aggregate(baja_time=Min('baja_time'))['baja_time']
