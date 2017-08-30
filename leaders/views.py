@@ -24,7 +24,7 @@ def _get_wbv():
 
     if wbv.count() > 1:
         wbv_data['team']['name'] = 'Tie!'
-        wbv_data['team']['symbol'] = '='
+        wbv_data['team']['symbol'] = 'Multiple Teams'
 
     cache.set('wbv', wbv_data, 15)
 
@@ -41,7 +41,7 @@ def _get_bm():
 
     if bm.count() > 1:
         bm_data['team']['name'] = 'Tie!'
-        bm_data['team']['symbol'] = '='
+        bm_data['team']['symbol'] = 'Multiple Teams'
 
     cache.set('bm', bm_data, 15)
 
@@ -58,7 +58,7 @@ def _get_oc():
 
     if oc.count() > 1:
         oc_data['team']['name'] = 'Tie!'
-        oc_data['team']['symbol'] = '='
+        oc_data['team']['symbol'] = 'Multiple Teams'
 
     cache.set('oc', oc_data, 15)
 
@@ -75,7 +75,7 @@ def _get_thp():
 
     if thp.count() > 1:
         thp_data['team']['name'] = 'Tie!'
-        thp_data['team']['symbol'] = '='
+        thp_data['team']['symbol'] = 'Multiple Teams'
 
     cache.set('thp', thp_data, 15)
 
@@ -105,7 +105,7 @@ def _get_dc_baja(objects):
 
     if dc.count() > 1:
         dc_data['team']['name'] = 'Tie!'
-        dc_data['team']['symbol'] = '='
+        dc_data['team']['symbol'] = 'Multiple Teams'
 
     return dc_data
 
@@ -116,7 +116,7 @@ def _get_dc_tc(objects):
 
     if dc.count() > 1:
         dc_data['team']['name'] = 'Tie!'
-        dc_data['team']['symbol'] = '='
+        dc_data['team']['symbol'] = 'Multiple Teams'
 
     return dc_data
 
@@ -127,7 +127,7 @@ def _get_dc_wise(objects):
 
     if dc.count() > 1:
         dc_data['team']['name'] = 'Tie!'
-        dc_data['team']['symbol'] = '='
+        dc_data['team']['symbol'] = 'Multiple Teams'
 
     return dc_data
 
@@ -138,7 +138,7 @@ def _get_dc_hpv(objects):
 
     if dc.count() > 1:
         dc_data['team']['name'] = 'Tie!'
-        dc_data['team']['symbol'] = '='
+        dc_data['team']['symbol'] = 'Multiple Teams'
 
     return dc_data
 
