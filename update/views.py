@@ -17,7 +17,7 @@ def parseInt(string):
     try: 
         val = int(string)
 
-        if val > MAX_INT:
+        if val > MAX_INT or val < 0:
             return None
 
         return val
