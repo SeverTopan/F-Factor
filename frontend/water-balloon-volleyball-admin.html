@@ -1,0 +1,243 @@
+<html>
+    <head>
+        <meta charset='utf-8' />
+    </head>
+    <body>
+
+    <center>
+        <button id="authorize-button" style="display: none;">Authorize</button>
+        <button id="signout-button" style="display: none;">Sign Out</button>
+        <div class="smart-loader-custom smart-loader-four" id="loader"> 
+          <span class="spinner-cube spinner-cube1"></span> 
+          <span class="spinner-cube spinner-cube2"></span> 
+          <span class="spinner-cube spinner-cube3"></span> 
+          <span class="spinner-cube spinner-cube4"></span> 
+        </div>
+    </center>
+
+    <br>
+    <hr>
+    <br>
+
+    <center>
+      <div id="wbv-admin-content"></div>
+    </center>
+
+    <script type="text/javascript">
+
+      var CLIENT_ID = '549280227059-jh19kl59g5f76m2cdogn8tqfi2n3cskt.apps.googleusercontent.com';
+      var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+      var SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+
+      var authorizeButton = document.getElementById('authorize-button');
+      var signoutButton = document.getElementById('signout-button');
+      var loader = document.getElementById('loader');
+
+      var pageContent = document.getElementById('wbv-admin-content');
+
+      var refreshId = null;
+      var values = null;
+
+      const LOADER_TEXT = `<span class="smart-loader-custom smart-loader-four" style="display: inline-table;vertical-align: middle;"> 
+                              <span class="spinner-cube spinner-cube1"></span> 
+                              <span class="spinner-cube spinner-cube2"></span> 
+                              <span class="spinner-cube spinner-cube3"></span> 
+                              <span class="spinner-cube spinner-cube4"></span> 
+                            </span>`;
+
+      /**
+       *  On load, called to load the auth2 library and API client library.
+       */
+      function handleClientLoad() {
+        gapi.load('client:auth2', initClient);
+      }
+
+      /**
+       *  Initializes the API client library and sets up sign-in state
+       *  listeners.
+       */
+      function initClient() {
+        gapi.client.init({
+          discoveryDocs: DISCOVERY_DOCS,
+          clientId: CLIENT_ID,
+          scope: SCOPES
+        }).then(function () {
+          // Listen for sign-in state changes.
+          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+
+          // Handle the initial sign-in state.
+          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+          authorizeButton.onclick = handleAuthClick;
+          signoutButton.onclick = handleSignoutClick;
+        });
+      }
+      
+
+      /**
+       *  Called when the signed in status changes, to update the UI
+       *  appropriately. After a sign-in, the API is called.
+       */
+      function updateSigninStatus(isSignedIn) {
+        loader.style.display = 'none';
+
+        if (isSignedIn) {
+          authorizeButton.style.display = 'none';
+          signoutButton.style.display = 'block';
+          initValues();
+
+          // initiate refresh loop
+          if (refreshId)
+            clearInterval(refreshId);
+          refreshId = setInterval(updateValues, 15000);
+
+        } else {
+          authorizeButton.style.display = 'block';
+          signoutButton.style.display = 'none';
+          pageContent.innerHTML = "";
+
+          // clear refresh loop
+          if (refreshId)
+            clearInterval(refreshId);
+        }
+      }
+
+      // Create the XHR object.
+      function createCORSRequest(method, url) {
+        var xhr = new XMLHttpRequest();
+        if ('withCredentials' in xhr) {
+          // XHR for Chrome/Firefox/Opera/Safari.
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != 'undefined') {
+          // XDomainRequest for IE.
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // CORS not supported.
+          xhr = null;
+        }
+        return xhr;
+      }
+
+      function initValues() {
+        pageContent.innerHTML = LOADER_TEXT;
+
+        var url = 'https://ffactor.herokuapp.com/wbv/?format=json';
+
+        var xhr = createCORSRequest('GET', url);
+        if (!xhr) {
+          console.log('Error: unable to make CORS request.');
+          pageContent.innerHTML = "An error has occurred. Please Retry.";
+          return;
+        }
+
+        // Response handlers.
+        xhr.onload = function() {
+          pageContent.innerHTML = " Edit the values below. Changes may take up to 15 seconds to propagate.<br>";
+          values = JSON.parse(xhr.responseText);
+          for (var i = 0; i < values.length; i++) {
+            generateForm(i, values[i].team.name, values[i].team.symbol, values[i].score);
+          }
+        };
+
+        xhr.onerror = function() {
+          console.log('Error: there was an error making the request.');
+          pageContent.innerHTML = "An error has occurred. Please Retry.";
+        };
+
+        xhr.send();
+      }
+
+      function updateValues() {
+        // This is a sample server that supports CORS.
+        var url = 'https://ffactor.herokuapp.com/wbv/?format=json';
+
+        var xhr = createCORSRequest('GET', url);
+        if (!xhr) {
+          console.log('Error: unable to make CORS request.');
+          pageContent.innerHTML = "An error has occurred. Please Retry.";
+          return;
+        }
+
+        // Response handlers.
+        xhr.onload = function() {
+          values = JSON.parse(xhr.responseText);
+          for (var i = 0; i < values.length; i++) {
+            var elementId = 'wbv-' + values[i].team.name + '-score-current';
+            var score = values[i].score === null ? '&empty;' : values[i].score;
+            document.getElementById(elementId).innerHTML = score + ' points';
+          }
+        };
+
+        xhr.onerror = function() {
+          console.log('Error: there was an error making the request.');
+          pageContent.innerHTML = "An error has occurred. Please Retry.";
+        };
+
+        xhr.send();
+
+      }
+
+      function generateForm(index, team, symbol, score) {
+        score = score === null ? '&empty;' : score;
+          pageContent.innerHTML += `
+            <form action="javascript:updateSheets('` + index + `')" class="block">
+                <label>{` + symbol + `} ` + team + ` &rarr; <span id="wbv-` + team + `-score-current">` + score + ` points</span></label>
+                <input type="text" id="wbv-` + team + `-score-input" style="width:20%">
+                <input type="submit">
+            </form>
+          `;
+      }
+
+      function updateSheets(index) {
+        var inputScore = 'wbv-' + values[index].team.name + '-score-input';
+        var currentScore = 'wbv-' + values[index].team.name + '-score-current';
+        var inputItem = document.getElementById(inputScore);
+        var scoreItem = document.getElementById(currentScore);
+        scoreItem.innerHTML = LOADER_TEXT;
+
+        gapi.client.sheets.spreadsheets.values.update({
+            spreadsheetId: '1phD9UoMwhutRabSvekdRgDUFzD9zBKWcI-7p_8_Tv0s',
+            range: '\'Water Balloon Volleyball\'!A' + (parseInt(index) + 2).toString(),
+            valueInputOption: 'USER_ENTERED',
+            values: [ [ inputItem.value ] ]
+        }).then(function(response) {
+            console.log(response);
+            var url = 'https://ffactor.herokuapp.com/update';
+
+            var xhr = createCORSRequest('GET', url);
+            if (!xhr) {
+              console.log('Error: unable to make CORS update request.');
+              pageContent.innerHTML = "An error has occurred. Please Retry.";
+              return;
+            }
+
+            // Response handlers.
+            xhr.onload = function() {
+              console.log("updated.");
+              updateValues();
+            };
+
+            xhr.onerror = function() {
+              console.log('Error: there was an error making the update request.');
+            };
+
+            xhr.send();
+        });
+      }
+
+      function handleAuthClick(event) {
+        gapi.auth2.getAuthInstance().signIn();
+      }
+
+      function handleSignoutClick(event) {
+        gapi.auth2.getAuthInstance().signOut();
+      }
+
+    </script>
+
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+  </body>
+</html>
