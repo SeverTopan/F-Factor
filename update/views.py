@@ -11,9 +11,14 @@ from pprint import pprint
 import os
 import json
 
-MAX_INT = 2147483647
+# Max value stored within a PositiveIntegerField.
+MAX_INT = 2147483647 
 
 def parseInt(string):
+    """
+        Sanitize the string into a value that can be stored within a PositiveIntegerField.
+    """
+
     try: 
         val = int(string)
 
@@ -25,13 +30,21 @@ def parseInt(string):
         return None
 
 def update(_):
+    """
+        Pulls an updated copy of the data from the data source of the cache.
+        In this case the data source is google sheets.
+    """
+
+    # Authentication scopes.
     scopes = ['https://www.googleapis.com/auth/spreadsheets']
 
+    # Obtain service key.
     if os.environ.get('GOOGLE_SERVICE_KEY') is not None:
         credentials = ServiceAccountCredentials.from_json_keyfile_dict(json.loads(os.environ['GOOGLE_SERVICE_KEY']), scopes)
     else:
         credentials = ServiceAccountCredentials.from_json_keyfile_name('key.json', scopes)
 
+    # Authorize.
     http_auth = credentials.authorize(Http())
 
     # The spreadsheet to request.
@@ -46,8 +59,8 @@ def update(_):
         "'Design Challenge'!A2:H19",
     ]
 
+    # Build and execute the sheets API request.
     sheets = discovery.build('sheets', 'v4', http=http_auth)
-
     request = sheets.spreadsheets().values().batchGet(spreadsheetId=spreadsheet_id, ranges=ranges)
     response = request.execute()
 
@@ -78,5 +91,6 @@ def update(_):
             hpv_score=parseInt(entry[5]),
         )
 
+    # 200 response.
     return HttpResponse()
 
