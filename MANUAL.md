@@ -16,6 +16,8 @@ Note: as the master account (ffactor.master), you have the ability to change any
 3. visit Pages > All pages > Home
 4. click 'edit' on the top-most page element
 5. there is a div tag at the very bottom of the first page element. remove the "style="display: none;" in it and edit the text appropriately
+6. Click the preview button on the right to see what the changes will look like without actually updating the site.
+7. When you are happy with the look of the site, click 'Update'. This will change the site!
 6. Unhide the 'Overview' Sheet on the Public Google Sheet.
 
 ## Website Failure

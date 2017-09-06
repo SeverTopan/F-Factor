@@ -43,6 +43,18 @@ Characteristics of this solution implementation:
 * The nature of the database transactions are read-intensive, with no new entries written, but with occasional updates to existing entries.
 * The Caching Server allows us to scale the solution horizontally. Since the Caching Server is hosted on heroku processing cores can be spooled up as needed. The Front-end is static file cached and supports a steady 120 requests/second under a constant 500 user load. 
 * Since Leader selection for the home page is costly (using 1 database read per event), its results are memory cached locally with an eviction after 15 seconds. This caching is largely responsible for the success of the multiple process scaling, otherwise database interactions are observed to be the performance bottleneck.
+* The following are the load testing results (requests per second coupled with latency). They are achieved using JMeter with 500 concurrent users repeatedly submitting HTTP GET requests.
+
+| Scale Tested  | Without Caching | With Caching |
+| ------------- |---------------| ------|
+| Free Dyno: 1     | 16/s,30s latency | 17/s, 20s latency |
+| Hobby Dyno: 1      | 17/s, 26s latency |   30/s, 13s latency |
+| Proffessional Dyno: 1  | 16/s, 30s latency |    25/s, 18s latency |
+| Proffessional Dyno: 2  | 19/s, 19s latency |    36/s, 11s latency |
+| Proffessional Dyno: 4  | 40/s, 10s latency |    150/s, 3s latency |
+| Proffessional Dyno: 8  | 41/s, 9s latency  |    400/s, 1s latency |
+
+note how the non-cached implementation doesn't scale, indicating the database accesses are the bottleneck. 
 
 ### Maintainability
 * Maintainability is the main cost of the solution architecture. A change in event number and structure in future years will force an update to the database structure of the Caching server as well as the front-end Javascript and Google Sheets
