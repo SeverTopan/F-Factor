@@ -1,1 +1,1 @@
-# F!Factor Backend
+# f-factor leaderboard server

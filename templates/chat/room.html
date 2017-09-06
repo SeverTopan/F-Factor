@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% load staticfiles %}
+  <h1>leaderboard</h1>
+  <form id="chatform">
+    <table id="chat">
+      <tbody>
+        {% for entry in entries %}
+          <tr>
+            <td><button type="increment" class="{{ entry.name }} increment">+</button></td>
+            <td>{{ entry.display_score }}</td>
+            <td>{{ entry.real_score }}</td>
+            <td>{{ entry.name }}</td>
+            <td><button type="decrement" class="{{ entry.name }} decrement">-</button></td>
+          </tr> 
+        {% endfor %}
+      </tbody>
+    </table>
+  </form>
+{% endblock content %}
+
+{% block afterbody %}
+  <script type="text/javascript" src='{% static "jquery-1.12.1.min.js" %}'></script>
+  <script type="text/javascript" src='{% static "reconnecting-websocket.min.js" %}'></script>
+  <script type="text/javascript" src='{% static "chat.js" %}'></script>
+{% endblock afterbody %}
