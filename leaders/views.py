@@ -14,6 +14,11 @@ from django.db.models import Max, Min
 from django.core.cache import cache
 
 def _get_wbv():
+    """
+        Obtains the leading score out of the wbv models.
+        Caches results for reuse, utilizes cached results if found.
+    """
+
     cached_val = cache.get('wbv')
     if cached_val is not None:
         return cached_val
@@ -31,6 +36,11 @@ def _get_wbv():
     return wbv_data
 
 def _get_bm():
+    """
+        Obtains the leading score out of the bm models.
+        Caches results for reuse, utilizes cached results if found.
+    """
+
     cached_val = cache.get('bm')
     if cached_val is not None:
         return cached_val
@@ -48,6 +58,11 @@ def _get_bm():
     return bm_data
 
 def _get_oc():
+    """
+        Obtains the leading score out of the oc models.
+        Caches results for reuse, utilizes cached results if found.
+    """
+
     cached_val = cache.get('oc')
     if cached_val is not None:
         return cached_val
@@ -65,6 +80,11 @@ def _get_oc():
     return oc_data
 
 def _get_thp():
+    """
+        Obtains the leading score out of the thp models.
+        Caches results for reuse, utilizes cached results if found.
+    """
+
     cached_val = cache.get('thp')
     if cached_val is not None:
         return cached_val
@@ -82,6 +102,12 @@ def _get_thp():
     return thp_data
 
 def _get_dc():
+    """
+        Obtains the leading score out of the dc models.
+        Caches results for reuse, utilizes cached results if found.
+        Sub-event leaders are accessed through helper methods.
+    """
+
     cached_val = cache.get('dc')
     if cached_val is not None:
         return cached_val
@@ -99,6 +125,11 @@ def _get_dc():
     return dc_data
 
 def _get_dc_baja(objects):
+    """
+        Obtains the leading baja score out of the dc models.
+        Caches results for reuse, utilizes cached results if found.
+    """
+
     max_time = objects.aggregate(baja_time=Min('baja_time'))['baja_time']
     dc = DcEntry.objects.filter(baja_time=max_time)
     dc_data = DcEntrySerializer(dc, many=True).data[0]
@@ -110,6 +141,11 @@ def _get_dc_baja(objects):
     return dc_data
 
 def _get_dc_tc(objects):
+    """
+        Obtains the leading tc score out of the dc models.
+        Caches results for reuse, utilizes cached results if found.
+    """
+
     max_score = objects.aggregate(toike_cannon_score=Max('toike_cannon_score'))['toike_cannon_score']
     dc = DcEntry.objects.filter(toike_cannon_score=max_score)
     dc_data = DcEntrySerializer(dc, many=True).data[0]
@@ -121,6 +157,11 @@ def _get_dc_tc(objects):
     return dc_data
 
 def _get_dc_wise(objects):
+    """
+        Obtains the leading wise score out of the dc models.
+        Caches results for reuse, utilizes cached results if found.
+    """
+
     max_score = objects.aggregate(wise_score=Max('wise_score'))['wise_score']
     dc = DcEntry.objects.filter(wise_score=max_score)
     dc_data = DcEntrySerializer(dc, many=True).data[0]
@@ -132,6 +173,11 @@ def _get_dc_wise(objects):
     return dc_data
 
 def _get_dc_hpv(objects):
+    """
+        Obtains the leading hpv score out of the dc models.
+        Caches results for reuse, utilizes cached results if found.
+    """
+
     max_score = objects.aggregate(hpv_score=Max('hpv_score'))['hpv_score']
     dc = DcEntry.objects.filter(hpv_score=max_score)
     dc_data = DcEntrySerializer(dc, many=True).data[0]
@@ -145,6 +191,10 @@ def _get_dc_hpv(objects):
 class LeaderView(APIView):
 
     def get(self, request, format=None):
+        """
+            Obtains the leading scores for all events.
+        """
+
         wbv_data = _get_wbv()
         bm_data = _get_bm()
         oc_data = _get_oc()
@@ -162,6 +212,10 @@ class LeaderView(APIView):
 class WbvLeaderView(APIView):
 
     def get(self, request, format=None):
+        """
+            Obtains the leading scores for wbv.
+        """
+
         wbv_data = _get_wbv()
 
         return Response({ 
@@ -171,6 +225,10 @@ class WbvLeaderView(APIView):
 class BmLeaderView(APIView):
 
     def get(self, request, format=None):
+        """
+            Obtains the leading scores for bm.
+        """
+
         bm_data = _get_bm()
 
         return Response({ 
@@ -180,6 +238,10 @@ class BmLeaderView(APIView):
 class OcLeaderView(APIView):
 
     def get(self, request, format=None):
+        """
+            Obtains the leading scores for oc.
+        """
+
         oc_data = _get_oc()
 
         return Response({ 
@@ -189,6 +251,10 @@ class OcLeaderView(APIView):
 class ThpLeaderView(APIView):
 
     def get(self, request, format=None):
+        """
+            Obtains the leading scores for thp.
+        """
+
         thp_data = _get_thp()
 
         return Response({ 
@@ -198,6 +264,10 @@ class ThpLeaderView(APIView):
 class DcLeaderView(APIView):
 
     def get(self, request, format=None):
+        """
+            Obtains the leading scores for dc.
+        """
+
         dc_data = _get_dc()
 
         return Response({ 
